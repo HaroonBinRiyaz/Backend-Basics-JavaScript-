@@ -33,7 +33,7 @@ const readUsers = async (req, res)=>{
 
     //sort
     const sortField = req.query.sort || "createdAt";
-const sortOrder = req.query.order === "asc" ? 1 : -1; 
+    const sortOrder = req.query.order === "asc" ? 1 : -1; 
 
     if(req.query.email) {
         filter.email = {$regex: req.query.email, $options: "i"};
