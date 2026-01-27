@@ -20,16 +20,35 @@ const registerUser = async (req, res) => {
 
 //GET / users (read all users)
 const readUsers = async (req, res)=>{
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    let page = Number(req.query.page) || 1;
+    let limit = Number(req.query.limit) || 10;
 
-    const users = await User.find()
-    .sort({ createdAt : -1})
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 10;
+
+    const MAX_LIMIT = 50;
+    if (limit > MAX_LIMIT) limit = MAX_LIMIT;
+    const skip = (page - 1) * limit;
+    const filter = {};
+
+    //sort
+    const sortField = req.query.sort || "createdAt";
+const sortOrder = req.query.order === "asc" ? 1 : -1; 
+
+    if(req.query.email) {
+        filter.email = {$regex: req.query.email, $options: "i"};
+    }
+
+    if(req.query.name){
+        filter.name = {$regex: req.query.name, $options: "i"};//removing options means case sensitive
+    }
+
+    const users = await User.find(filter)
+    .sort({ [sortField] : sortOrder})
     .skip(skip)
     .limit(limit);
 
-    const total = await User.countDocuments();
+    const total = await User.countDocuments(filter);
     return res.status(200).json({
         ok: true,
         page,
