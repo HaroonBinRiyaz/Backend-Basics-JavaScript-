@@ -34,6 +34,44 @@ const registerUser = async (req, res) => {
 });
 }
 
+const loginUser = async (req, res) => {
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        return res.status(400).json({
+            ok: false,
+            message: "email and password are required",
+        })
+    }
+
+    const user = await User.findOne({email});
+    if(!user){
+        return res.status(401).json({
+            ok: false,
+            message: "invalid email or password"
+        });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch){
+        return res.status(401).json({
+            ok: false,
+            message: "invalid email or password",
+        });
+    }
+
+    return res.status(200).json({
+        ok: true,
+        message: "login successful",
+        data: {
+            id : user._id,
+            name: user.name,
+            email: user.email,
+        }
+    })
+
+}
+
 //GET / users (read all users)
 const readUsers = async (req, res)=>{
     let page = Number(req.query.page) || 1;
@@ -117,4 +155,4 @@ const deleteUser = async (req, res)=>{
     return res.status(200).json({ok: true, message: "user deleted successfully", data: user});
 }
 
-export {registerUser, readUsers, getUserById, updateUser, deleteUser};
+export {registerUser, readUsers, getUserById, updateUser, deleteUser, loginUser};
