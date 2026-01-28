@@ -1,21 +1,37 @@
 import { User } from "../models/user.model.js";
+import bcrypt from "bcrypt";
 
 // POST / register (create)
 const registerUser = async (req, res) => {
     const name = req.body.name;
     const email = req.body.email;
+    const password = req.body.password;
 
-    if(!name || !email){
-        return res.status(400).json({ok: false, message: "name and email required"});
+    if(!name || !email || !password){
+        return res.status(400).json({ok: false, message: "name, email and password are required"});
     }
     if(email && !email.includes("@")){
         return res.status(400).json({ok: false, message: "email must contain @"});
     }
+    if(password.length < 6){
+        return res.status(400).json({ ok: false, message: "password must be 6 letters long"})
+    }
+
+    //HASH PASSWORD
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const user = await User.create( {
         name,
-        email
-    })
-    return res.status(201).json({ok:true, message: "registered successfully", data: user});
+        email,
+        password: hashedPassword,
+    });
+    return res.status(201).json({ok:true, message: "registered successfully", data:{
+        id: user._id,
+        name: user.name,
+        email: user.email,
+    },
+});
 }
 
 //GET / users (read all users)
