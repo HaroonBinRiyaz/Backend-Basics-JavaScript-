@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // POST / register (create)
 const registerUser = async (req, res) => {
@@ -60,17 +61,23 @@ const loginUser = async (req, res) => {
         });
     }
 
+    //JWT TOKEN GENERATION 
+    const token = jwt.sign({
+        id : user._id,
+        email : user.email,
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: process.env.JWT_EXPIRES_IN || "1h",
+    }
+);
+// Send token
     return res.status(200).json({
         ok: true,
         message: "login successful",
-        data: {
-            id : user._id,
-            name: user.name,
-            email: user.email,
-        }
-    })
-
-}
+        token,
+    });
+};
 
 //GET / users (read all users)
 const readUsers = async (req, res)=>{
