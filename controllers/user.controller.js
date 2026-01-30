@@ -45,7 +45,7 @@ const loginUser = async (req, res) => {
         })
     }
 
-    const user = await User.findOne({email});
+    const user = await User.findOne({email}).select("+password");
     if(!user){
         return res.status(401).json({
             ok: false,
@@ -122,7 +122,7 @@ const readUsers = async (req, res)=>{
 
 //GET/users/:id (read one user)
 const getUserById = async (req, res)=>{
-    const user = await User.findById(req.params.id)
+    const user = await User.findById(req.params.id);
     
     if(!user){
         return res.status(404).json({ok: false, message: "no user found"});
