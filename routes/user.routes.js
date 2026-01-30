@@ -14,11 +14,14 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+//public routes
 router.post("/register", asyncHandler(registerUser));
 router.post("/login", asyncHandler(loginUser));
+
+//protected routes
 router.get("/users", authMiddleware, asyncHandler(readUsers));
-router.get("/users/:id", asyncHandler(getUserById));
-router.put("/users/:id", asyncHandler(updateUser));
-router.delete("/users/:id", asyncHandler(deleteUser));
+router.get("/users/:id",authMiddleware, asyncHandler(getUserById));
+router.put("/users/:id", authMiddleware,asyncHandler(updateUser));
+router.delete("/users/:id",authMiddleware, asyncHandler(deleteUser));
 
 export default router;
