@@ -65,6 +65,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({
         id : user._id,
         email : user.email,
+        role: user.role
     },
     process.env.JWT_SECRET,
     {
@@ -135,6 +136,13 @@ const updateUser = async (req, res)=>{
     const name = req.body.name;
     const email = req.body.email;
 
+    if(req.user.id !== req.params.id && req.user.role !== "admin" ){
+        return res.status(403).json({
+            ok: false,
+            message: "Forbidden, not allowed",
+        });
+    }
+
     if(!name && !email){
         return res.status(400).json({ok: false, message:"nothing to update"});
     }
@@ -155,6 +163,13 @@ const updateUser = async (req, res)=>{
 //DELETE /users/:id (delete)
 const deleteUser = async (req, res)=>{
     const user = await User.findByIdAndDelete(req.params.id);
+
+    if(req.user.id !== req.params.id && req.user.role !== "admin" ){
+        return res.status(403).json({
+            ok: false,
+            message: "Forbidden, not allowed",
+        });
+    }
 
     if(!user){
         return res.status(404).json({ok: false, message: "user not found"})
