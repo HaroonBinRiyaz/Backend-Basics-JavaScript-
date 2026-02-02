@@ -5,7 +5,7 @@ import{
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    makeAdmin,
 } from "../controllers/user.controller.js"
 
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -23,6 +23,7 @@ router.get("/users", authMiddleware, asyncHandler(readUsers));
 router.get("/users/:id",authMiddleware, asyncHandler(getUserById));
 router.put("/users/:id", authMiddleware,asyncHandler(updateUser));
 router.patch("/users/:id", authMiddleware, asyncHandler(updateUser));
+router.patch("users/:id/role", authMiddleware, asyncHandler(makeAdmin));
 router.delete("/users/:id",authMiddleware, asyncHandler(deleteUser));
 
 export default router;

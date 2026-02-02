@@ -95,7 +95,7 @@ const loginUser = async (req, res) => {
     });
 };
 
-
+//POST /refresh
 const refreshAccessToken = async (req, res) => {
     const {refreshToken} = req.body;
 
@@ -124,7 +124,7 @@ const refreshAccessToken = async (req, res) => {
     });
 };
 
-
+//POST /logout
 const logoutUser = async (req, res) => {
   const user = await User.findById(req.user.id);
 
@@ -139,6 +139,48 @@ const logoutUser = async (req, res) => {
   });
 };
 
+
+//PATCH /users/:id/role
+const makeAdmin = async(req,res) => {
+    if(req.user.rol !== "admin"){
+        return res.status(403).json({
+            ok: false,
+            message: "only admins can change roles",
+
+        });
+    }
+    //prevent self promotion.
+    if (req.user.id === req.params.id) {
+    return res.status(400).json({
+      ok: false,
+      message: "You cannot change your own role",
+    });
+  }
+
+  //find target user
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      message: "User not found",
+    });
+  }
+
+   // Update role
+  user.role = "admin";
+  await user.save();
+
+  return res.status(200).json({
+    ok: true,
+    message: "User promoted to admin",
+    data: {
+      id: user._id,
+      role: user.role,
+    },
+  });
+
+
+}
 
 //GET / users (read all users)
 const readUsers = async (req, res)=>{
@@ -237,4 +279,4 @@ const deleteUser = async (req, res)=>{
     return res.status(200).json({ok: true, message: "user deleted successfully", data: user});
 }
 
-export {registerUser, readUsers, getUserById, updateUser, deleteUser, loginUser, refreshAccessToken, logoutUser};
+export {registerUser, readUsers, getUserById, updateUser, deleteUser, loginUser, refreshAccessToken, logoutUser, makeAdmin};
