@@ -16,7 +16,7 @@ const router = Router();
 
 //public routes
 router.post("/register", asyncHandler(registerUser));
-router.post("/login", asyncHandler(loginUser));
+
 
 //protected routes
 router.get("/users", authMiddleware, asyncHandler(readUsers));

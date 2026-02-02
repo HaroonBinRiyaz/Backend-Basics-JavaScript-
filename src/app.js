@@ -1,5 +1,6 @@
 import express from "express";
-import routes from "../routes/user.routes.js";
+import authRoutes from "../routes/auth.routes.js";
+import userRoutes from "../routes/user.routes.js";
 import dotenv from "dotenv";
 import { errorHandler }  from "../middlewares/error.middleware.js";
 import { connectDB } from "./db/connectDB.js";
@@ -12,7 +13,8 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.use(routes);
+app.use("api/auth", authRoutes);
+app.use("api", userRoutes);
 app.use(errorHandler);
 
 await connectDB();
