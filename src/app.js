@@ -13,8 +13,8 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.use("api/auth", authRoutes);
-app.use("api", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api", userRoutes);
 app.use(errorHandler);
 
 await connectDB();

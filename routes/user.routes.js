@@ -23,7 +23,7 @@ router.get("/users", authMiddleware, asyncHandler(readUsers));
 router.get("/users/:id",authMiddleware, asyncHandler(getUserById));
 router.put("/users/:id", authMiddleware,asyncHandler(updateUser));
 router.patch("/users/:id", authMiddleware, asyncHandler(updateUser));
-router.patch("users/:id/role", authMiddleware, asyncHandler(makeAdmin));
+router.patch("/users/:id/role", authMiddleware, asyncHandler(makeAdmin));
 router.delete("/users/:id",authMiddleware, asyncHandler(deleteUser));
 
 export default router;
