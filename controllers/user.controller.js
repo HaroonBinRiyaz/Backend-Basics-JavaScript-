@@ -142,7 +142,7 @@ const logoutUser = async (req, res) => {
 
 //PATCH /users/:id/role
 const makeAdmin = async(req,res) => {
-    if(req.user.rol !== "admin"){
+    if(req.user.role !== "admin"){
         return res.status(403).json({
             ok: false,
             message: "only admins can change roles",
