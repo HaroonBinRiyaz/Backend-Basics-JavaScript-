@@ -12,7 +12,7 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.post("/login", asyncHandler(loginUser));
-router.post("refresh", asyncHandler(refreshAccessToken));
+router.post("/refresh", asyncHandler(refreshAccessToken));
 
 router.post("/logout", authMiddleware, asyncHandler(logoutUser));
 
