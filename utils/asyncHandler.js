@@ -1,7 +1,7 @@
 /* utils are meant to store helper functions/ repitative functions/code. Here for example,
 writing async contoller function in update controller function or delete controller function could lead to DB crash, if error happens,
 hence we normally wrap them in try catch block, however doing that with every controller function is
-repitative, hence a universal function needs to be set that would address all of them */
+repitative, hence a universal function needs to be set that would address all of them. */
 
 // const asyncHandler = (fn)=>{
 //     return async (req, res, next) =>{
