@@ -8,16 +8,6 @@ const registerUser = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    if(!name || !email || !password){
-        return res.status(400).json({ok: false, message: "name, email and password are required"});
-    }
-    if(email && !email.includes("@")){
-        return res.status(400).json({ok: false, message: "email must contain @"});
-    }
-    if(password.length < 6){
-        return res.status(400).json({ ok: false, message: "password must be 6 letters long"})
-    }
-
     //HASH PASSWORD
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -39,12 +29,6 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const {email, password} = req.body;
 
-    if(!email || !password){
-        return res.status(400).json({
-            ok: false,
-            message: "email and password are required",
-        })
-    }
 
     const user = await User.findOne({email}).select("+password");
     if(!user){
@@ -235,26 +219,15 @@ const getUserById = async (req, res)=>{
 
 //PUT /users/:id (update)
 const updateUser = async (req, res)=>{
-    const name = req.body.name;
-    const email = req.body.email;
-
+   
     if(req.user.id !== req.params.id && req.user.role !== "admin" ){
         return res.status(403).json({
             ok: false,
             message: "Forbidden, not allowed",
         });
     }
-
-    if(!name && !email){
-        return res.status(400).json({ok: false, message:"nothing to update"});
-    }
-    if(email && !email.includes("@")){
-        return res.status(400).json({ok: false, message: "email must contain @"});
-    }
-    const updates = {};
-    if (name) updates.name = name;
-    if (email) updates.email = email;
-
+    const {name, email} = req.body;
+    const updates = {name, email};
     const user = await User.findByIdAndUpdate(req.params.id, updates, {new: true});
     if (!user) {
     return res.status(404).json({ ok: false, message: "user not found" });
@@ -264,15 +237,15 @@ const updateUser = async (req, res)=>{
 
 //DELETE /users/:id (delete)
 const deleteUser = async (req, res)=>{
-    const user = await User.findByIdAndDelete(req.params.id);
-
+    
     if(req.user.id !== req.params.id && req.user.role !== "admin" ){
         return res.status(403).json({
             ok: false,
             message: "Forbidden, not allowed",
         });
     }
-
+    const user = await User.findByIdAndDelete(req.params.id);
+    
     if(!user){
         return res.status(404).json({ok: false, message: "user not found"})
     }

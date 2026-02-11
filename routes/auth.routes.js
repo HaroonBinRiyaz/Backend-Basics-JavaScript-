@@ -8,10 +8,12 @@ import{
 
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+import {validate} from "../middlewares/validation.middleware.js"
+import {loginSchema} from "../validators/user.validator.js";
 
 const router = Router();
 
-router.post("/login", asyncHandler(loginUser));
+router.post("/login", validate(loginSchema),asyncHandler(loginUser));
 router.post("/refresh", asyncHandler(refreshAccessToken));
 
 router.post("/logout", authMiddleware, asyncHandler(logoutUser));
