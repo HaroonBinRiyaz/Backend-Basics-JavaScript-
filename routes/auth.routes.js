@@ -11,11 +11,17 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {validate} from "../middlewares/validation.middleware.js"
 import {loginSchema} from "../validators/user.validator.js";
 
+import {
+    loginLimiter,
+    refreshLimiter,
+    apiLimiter
+} from "../middlewares/rateLimit.middleware.js";
+
 const router = Router();
 
-router.post("/login", validate(loginSchema),asyncHandler(loginUser));
-router.post("/refresh", asyncHandler(refreshAccessToken));
-
+router.use(apiLimiter);
+router.post("/login", validate(loginSchema), loginLimiter, asyncHandler(loginUser));
+router.post("/refresh", refreshLimiter, asyncHandler(refreshAccessToken));
 router.post("/logout", authMiddleware, asyncHandler(logoutUser));
 
 export default router;

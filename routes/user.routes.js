@@ -13,12 +13,14 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {validate} from "../middlewares/validation.middleware.js"
 import { registerSchema, updateUserSchema } from "../validators/user.validator.js";
 
+import {
+    registerLimiter,
+} from "../middlewares/rateLimit.middleware.js"
 
 const router = Router();
 
 //public routes
-router.post("/register", validate(registerSchema), asyncHandler(registerUser));
-
+router.post("/register",  validate(registerSchema), registerLimiter, asyncHandler(registerUser));
 
 //protected routes
 router.get("/users", authMiddleware, asyncHandler(readUsers));
