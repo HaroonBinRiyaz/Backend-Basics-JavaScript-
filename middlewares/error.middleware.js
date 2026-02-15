@@ -1,3 +1,5 @@
+import { logger } from "../utils/logger.js";
+
 const errorHandler = (err, req, res, next)=>{
     //JSON ERROR
     if(err instanceof SyntaxError && err.status === 400 && "body" in err ){
@@ -20,7 +22,7 @@ const errorHandler = (err, req, res, next)=>{
     }
 
     //fallback
-    console.error(err); //generic error
+    logger.error(`${req.method} ${req.originalUrl} -> ${err.stack || err.message}`);
     return res.status(500).json({ok: false, message: "internal Server Error"});
 }
 
